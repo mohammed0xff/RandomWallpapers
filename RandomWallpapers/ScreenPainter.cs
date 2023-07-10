@@ -63,7 +63,6 @@ namespace RandomWallpapers
 				Console.WriteLine(ex);
 			}
 		}
-
 	}
 
 	public enum WallpaperStyle

@@ -3,8 +3,8 @@
     public static class Settings
     {
         public static readonly bool Online = true;
-        public static readonly bool RandomImage = true;
-        public static readonly string EveryNMinuites = "1";
+        public static readonly bool RandomImage = false;
+        public static readonly int EveryNMinuites = 1;
         public static readonly WallpaperStyle Style = WallpaperStyle.Fit;
 
         public static readonly string AppDirectory = "C:\\AwesomeWallpapers";

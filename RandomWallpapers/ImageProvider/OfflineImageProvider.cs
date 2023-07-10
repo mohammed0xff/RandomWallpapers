@@ -6,37 +6,42 @@ namespace RandomWallpapers
 	{
 		public static string? GetOneRandomly(string? path = null)
 		{
-			if(path == null)
-				path = Settings.OfflineDirectory;
+			path ??= Settings.OfflineDirectory;
 
-			if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
-				return null;
+            if (string.IsNullOrEmpty(path))
+            {
+                Console.WriteLine("ERROR: The specified directory path is empty.");
+                return null;
+            }
 
-			// regex to filter non image files.
-			var wallNameRegex = new Regex("[^\\s]+(.*?)\\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$");
-			var filesList = Directory.GetFiles(path).Where(x => wallNameRegex.IsMatch(x)).ToList();
-			if (filesList.Count < 0)
+
+            if (!Directory.Exists(path))
+            {
+                Console.WriteLine("ERROR: The specified directory path does not exist.");
+                return null;
+            }
+
+            var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var filesList = Directory.GetFiles(path)
+                                      .Where(file => imageExtensions.Contains(Path.GetExtension(file).ToLower()))
+                                      .ToList();
+            if (filesList.Count == 0)
+			{
                 Console.WriteLine("ERROR : Directory specified doesn't contain images.");
 				return null;
-
-			// filter non image files.
-			IEnumerable<string> wallsList =
-				from wallFilePath in filesList
-				let resExp = wallNameRegex.Match(wallFilePath).Groups[0].Value
-				select resExp;
+			}
 
 			// choose and return one randomly.
 			var randgen = new Random();
 			int idx = randgen.Next(0, filesList.Count -1);
-			var chosenImage = wallsList.ElementAt(idx);
+			var chosenImage = filesList.ElementAt(idx);
+			
 			return chosenImage;
 		}
 
         public Task<string?> GetImage()
         {
-			return Task.FromResult(
-				GetOneRandomly()
-				);
+			return Task.FromResult(GetOneRandomly());
 		}
     }
 }
